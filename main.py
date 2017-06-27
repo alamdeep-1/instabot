@@ -1,4 +1,4 @@
-import requests
+import requests,urllib
 from token import APP_ACCESS_TOKEN
 
 BASE_URL = 'https://api.instagram.com/v1/'
@@ -56,9 +56,30 @@ def get_user_info(insta_username):
     else:
         print 'Status code other than 200 received!'
 
+
+def get_own_post():
+    request_url = (BASE_URL + 'users/self/media/recent/?access_token=%s') % (APP_ACCESS_TOKEN)
+    print 'GET request url : %s' % (request_url)
+    own_media = requests.get(request_url).json()
+
+    if own_media['meta']['code'] == 200:
+        if len(own_media['data']):
+            image_name = own_media['data'][0]['id'] + '.jpeg'
+            image_url = own_media['data'][0]['images']['standard_resolution']['url']
+            urllib.urlretrieve(image_url, image_name)
+            print 'Your image has been downloaded!'
+        else:
+            print 'Post does not exist!'
+    else:
+        print 'Status code other than 200 received!'
+
+
+
 self_info()
 
 print get_user_id("vivek_shivam")
 
 print get_user_info("vivek_shivam")
+
+get_own_post()
 
