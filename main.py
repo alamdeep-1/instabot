@@ -1,8 +1,10 @@
+#INSTABOT
 import requests,urllib
 from token import APP_ACCESS_TOKEN
 
 BASE_URL = 'https://api.instagram.com/v1/'
 
+#defining function for getting users own details
 def self_info():
   request_url = (BASE_URL + 'users/self/?access_token=%s') % (APP_ACCESS_TOKEN)
   print 'GET request url : %s' % (request_url)
@@ -20,7 +22,7 @@ def self_info():
   else:
     print 'Status code other than 200 received!'
 
-
+#defining function searching a user & getting its id.
 def get_user_id(insta_username):
     request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (insta_username, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
@@ -35,7 +37,7 @@ def get_user_id(insta_username):
         print 'Status code other than 200 received!'
         exit()
 
-
+#getting information of other user.
 def get_user_info(insta_username):
     user_id = get_user_id(insta_username)
     if user_id == None:
@@ -56,7 +58,7 @@ def get_user_info(insta_username):
     else:
         print 'Status code other than 200 received!'
 
-
+#for downloading own post.
 def get_own_post():
     request_url = (BASE_URL + 'users/self/media/recent/?access_token=%s') % (APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
@@ -64,8 +66,9 @@ def get_own_post():
 
     if own_media['meta']['code'] == 200:
         if len(own_media['data']):
-            image_name = own_media['data'][0]['id'] + '.jpeg'
-            image_url = own_media['data'][0]['images']['standard_resolution']['url']
+            n_th_photo = int(raw_input("which photo"))
+            image_name = own_media['data'][n_th_photo]['id'] + '.jpeg'
+            image_url = own_media['data'][n_th_photo]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -73,7 +76,7 @@ def get_own_post():
     else:
         print 'Status code other than 200 received!'
 
-
+#function for downloading other users post.
 def get_user_post(insta_username):
     user_id = get_user_id(insta_username)
     if user_id == None:
@@ -85,8 +88,9 @@ def get_user_post(insta_username):
 
     if user_media['meta']['code'] == 200:
         if len(user_media['data']):
-            image_name = user_media['data'][0]['id'] + '.jpeg'
-            image_url = user_media['data'][0]['images']['standard_resolution']['url']
+            n_th_photo = int(raw_input("which photo"))
+            image_name = user_media['data'][n_th_photo]['id'] + '.jpeg'
+            image_url = user_media['data'][n_th_photo]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
             print 'Your image has been downloaded!'
         else:
@@ -95,17 +99,17 @@ def get_user_post(insta_username):
         print 'Status code other than 200 received!'
 
 
-
+#organising all calling functions.
 def start_bot():
     while True:
         print '\n'
         print 'Hey! Welcome to instaBot!'
-        print 'Here are your menu options:'
-        print "a.Get your own details\n"
-        print "b.Get details of a user by username\n"
-        print "c.Get your own recent post\n"
-        print "d.Get the recent post of a user by username\n"
-        print "j.Exit"
+        print 'Here are your menu options:\n'
+        print "a.Get your own details"
+        print "b.Get details of a user by username"
+        print "c.Get your own recent post"
+        print "d.Get the recent post of a user by username"
+        print "j.Exit\n"
 
         choice = raw_input("Enter you choice: ")
         if choice == "a":
