@@ -117,6 +117,7 @@ def get_post_id(insta_username):
         print 'Status code other than 200 received!'
         exit()
 
+#like a post of user.
 def like_a_post(insta_username):
     media_id=get_user_id(insta_username)
     request_url = (BASE_URL + 'media/%s/likes') % (media_id)
