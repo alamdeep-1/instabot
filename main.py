@@ -1,6 +1,6 @@
 #INSTABOT
-import requests,urllib
-from token import APP_ACCESS_TOKEN
+import requests,urllib,pylab
+from acctoken import APP_ACCESS_TOKEN
 
 BASE_URL = 'https://api.instagram.com/v1/'
 
@@ -98,6 +98,8 @@ def get_user_post(insta_username):
     else:
         print 'Status code other than 200 received!'
 
+
+
 def get_post_id(insta_username):
     user_id = get_user_id(insta_username)
     if user_id == None:
@@ -117,7 +119,8 @@ def get_post_id(insta_username):
         print 'Status code other than 200 received!'
         exit()
 
-#like a post of user.
+
+#Function for liking users post.
 def like_a_post(insta_username):
     media_id=get_user_id(insta_username)
     request_url = (BASE_URL + 'media/%s/likes') % (media_id)
@@ -128,6 +131,7 @@ def like_a_post(insta_username):
         print 'Like was successful!'
     else:
         print 'Your like was unsuccessful. Try again!'
+
 
 #defining fuction for making comment on users post.
 def post_a_comment(insta_username):
@@ -145,6 +149,42 @@ def post_a_comment(insta_username):
         print "Unable to add comment. Try again!"
 
 
+#No of images with popular hashtag.
+def analyse_hashtag(insta_username):
+    hash_item = {}
+    user_id = get_user_id(insta_username)
+    if user_id == None:
+        print 'User does not exist!'
+        exit()
+    request_url = (BASE_URL + 'users/%s/media/recent/?access_token=%s' % (user_id, APP_ACCESS_TOKEN))
+    user_media = requests.get(request_url).json()
+    if user_media['meta']['code'] == 200:
+        if len(user_media['data']):
+            for x in range(0, len(user_media['data'])):
+                my_tag_len = len(user_media['data'][x]['tags'])
+                for y in range(0, my_tag_len):
+                    # values of hashtag if coming twice in dictionary it will be updated to 2 as per its count value
+                    if user_media['data'][x]['tags'][y] in hash_item:
+                        hash_item[user_media['data'][x]['tags'][y]] += 1
+                    else:
+                        hash_item[user_media['data'][x]['tags'][y]] = 1
+        else:
+            print 'Post does not exist!'
+    else:
+        print 'Status code other than 200 received!'
+
+    print hash_item
+
+#plotting hastags using malplotlib.
+    pylab.figure(1)
+    # range is given to pylab which takes all the values in the dictionary
+    x = range(len(hash_item))
+    pylab.xticks(x, hash_item.keys())
+    # 'g' adds color to the graph line
+    pylab.plot(x, hash_item.values(), 'g')
+    # pylabshow is used to finally display the graph
+    pylab.show()
+
 
 #organising all calling functions.
 def start_bot():
@@ -158,8 +198,9 @@ def start_bot():
         print "c.Get your own recent post"
         print "d.Get the recent post of a user by username"
         print "e.like users post"
-        print "f.Make a comment on the recent post of a user\n"
-        print "j.Exit\n"
+        print "f.Make a comment on the recent post of a user"
+        print "g.Show hashtag of user & plot it,\n"
+        print "j.EXIT\n"
 
         choice = raw_input("Enter you choice: ")
         if choice == "a":
@@ -178,12 +219,14 @@ def start_bot():
         elif choice == "f":
             insta_username = raw_input("Enter the username of the user: ")
             post_a_comment(insta_username)
+        elif choice == "g":
+            insta_username = raw_input("Enter the username of the user: ")
+            analyse_hashtag(insta_username)
         elif choice == "j":
           exit()
         else:
             a=False
             print "wrong choice"
-
 
 start_bot()
 
