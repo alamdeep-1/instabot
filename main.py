@@ -50,6 +50,7 @@ def get_user_info(insta_username):
     if user_info['meta']['code'] == 200:
         if len(user_info['data']):
             print 'Username: %s' % (user_info['data']['username'])
+            print 'Full Name: %s' % (user_info['data']['full_name'])
             print 'No. of followers: %s' % (user_info['data']['counts']['followed_by'])
             print 'No. of people you are following: %s' % (user_info['data']['counts']['follows'])
             print 'No. of posts: %s' % (user_info['data']['counts']['media'])
@@ -88,7 +89,7 @@ def get_user_post(insta_username):
 
     if user_media['meta']['code'] == 200:
         if len(user_media['data']):
-            n_th_photo = int(raw_input("which photo"))
+            n_th_photo = int(raw_input("which photo: "))
             image_name = user_media['data'][n_th_photo]['id'] + '.jpeg'
             image_url = user_media['data'][n_th_photo]['images']['standard_resolution']['url']
             urllib.urlretrieve(image_url, image_name)
@@ -122,7 +123,7 @@ def get_post_id(insta_username):
 
 #Function for liking users post.
 def like_a_post(insta_username):
-    media_id=get_user_id(insta_username)
+    media_id = get_post_id(insta_username)
     request_url = (BASE_URL + 'media/%s/likes') % (media_id)
     payload = {"access_token": APP_ACCESS_TOKEN}
     print 'POST request url : %s' % (request_url)
@@ -131,6 +132,7 @@ def like_a_post(insta_username):
         print 'Like was successful!'
     else:
         print 'Your like was unsuccessful. Try again!'
+    exit()
 
 
 #defining fuction for making comment on users post.
@@ -147,6 +149,46 @@ def post_a_comment(insta_username):
         print "Successfully added a new comment!"
     else:
         print "Unable to add comment. Try again!"
+    exit()
+
+#Function to get the list of users who liked post.
+def get_like_list(insta_username):
+    media_id = get_post_id(insta_username)
+    request_url = (BASE_URL + 'media/%s/likes?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
+    print 'GET request url:%s' % (request_url)
+    users_info = requests.get(request_url).json()
+    i = 0
+    if users_info['meta']['code'] == 200:
+        if len(users_info['data']):
+            for ele in users_info['data']:
+                print (users_info['data'][i]['username'])
+                i = i + 1
+        else:
+            print 'User does not exist!'
+    else:
+        print 'Status code other than 200 received!'
+    exit()
+
+
+#Function to get list of users who commented in post.
+def get_comment_list(insta_username):
+    media_id = get_post_id(insta_username)
+    request_url = (BASE_URL + 'media/%s/comments?access_token=%s') % (media_id,APP_ACCESS_TOKEN)
+    print "get request url: %s" % (request_url)
+    comment_info = requests.get(request_url).json()
+    i = 0
+    if comment_info['meta']['code'] == 200:
+        if len(comment_info['data']):
+            for ele in comment_info['data']:
+                print (comment_info['data'][i]['text'])
+                print (comment_info['data'][i]['from']['username'])
+                i = i+1
+            else:
+                print 'user does not exist'
+        else:
+            print 'status code other than 200 is recieved!'
+    exit()
+
 
 
 #No of images with popular hashtag.
@@ -175,6 +217,7 @@ def analyse_hashtag(insta_username):
 
     print hash_item
 
+
 #plotting hastags using malplotlib.
     pylab.figure(1)
     # range is given to pylab which takes all the values in the dictionary
@@ -199,7 +242,9 @@ def start_bot():
         print "d.Get the recent post of a user by username"
         print "e.like users post"
         print "f.Make a comment on the recent post of a user"
-        print "g.Show hashtag of user & plot it,\n"
+        print "g.Get a list of people who have liked the recent post of a user"
+        print "h.Get a list of people who have commented on recent post of a user"
+        print "i.Show hashtag of user & plot it,"
         print "j.EXIT\n"
 
         choice = raw_input("Enter you choice: ")
@@ -220,6 +265,12 @@ def start_bot():
             insta_username = raw_input("Enter the username of the user: ")
             post_a_comment(insta_username)
         elif choice == "g":
+            insta_username = raw_input("Enter the username of the user: ")
+            get_like_list(insta_username)
+        elif choice == "h":
+            insta_username = raw_input("Enter the username of the user: ")
+            get_comment_list(insta_username)
+        elif choice == "i":
             insta_username = raw_input("Enter the username of the user: ")
             analyse_hashtag(insta_username)
         elif choice == "j":
