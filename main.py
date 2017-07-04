@@ -1,5 +1,7 @@
 #INSTABOT
 import requests,urllib,pylab
+from textblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
 from acctoken import APP_ACCESS_TOKEN
 
 BASE_URL = 'https://api.instagram.com/v1/'
@@ -189,6 +191,36 @@ def get_comment_list(insta_username):
             print 'status code other than 200 is recieved!'
     exit()
 
+def delete_negative_comment(insta_username):
+    media_id = get_post_id(insta_username)
+    request_url = (BASE_URL + 'media/%s/comments/?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
+    print 'GET request url : %s' % (request_url)
+    comment_info = requests.get(request_url).json()
+
+    if comment_info['meta']['code'] == 200:
+        if len(comment_info['data']):
+            #Here's a naive implementation of how to delete the negative comments :)
+            for x in range(0, len(comment_info['data'])):
+                comment_id = comment_info['data'][x]['id']
+                comment_text = comment_info['data'][x]['text']
+                blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
+                if (blob.sentiment.p_neg > blob.sentiment.p_pos):
+                    print 'Negative comment : %s' % (comment_text)
+                    delete_url = (BASE_URL + 'media/%s/comments/%s/?access_token=%s') % (media_id, comment_id, APP_ACCESS_TOKEN)
+                    print 'DELETE request url : %s' % (delete_url)
+                    delete_info = requests.delete(delete_url).json()
+
+                    if delete_info['meta']['code'] == 200:
+                        print 'Comment successfully deleted!\n'
+                    else:
+                        print 'Unable to delete comment!'
+                else:
+                    print 'Positive comment : %s\n' % (comment_text)
+        else:
+            print 'There are no existing comments on the post!'
+    else:
+        print 'Status code other than 200 received!'
+    exit()
 
 
 #No of images with popular hashtag.
@@ -217,7 +249,6 @@ def analyse_hashtag(insta_username):
 
     print hash_item
 
-
 #plotting hastags using malplotlib.
     pylab.figure(1)
     # range is given to pylab which takes all the values in the dictionary
@@ -244,8 +275,9 @@ def start_bot():
         print "f.Make a comment on the recent post of a user"
         print "g.Get a list of people who have liked the recent post of a user"
         print "h.Get a list of people who have commented on recent post of a user"
-        print "i.Show hashtag of user & plot it,"
-        print "j.EXIT\n"
+        print "i.Delete negative comments from the recent post of a user"
+        print "j.Show hashtag of user & plot it,"
+        print "k.EXIT\n"
 
         choice = raw_input("Enter you choice: ")
         if choice == "a":
@@ -270,10 +302,13 @@ def start_bot():
         elif choice == "h":
             insta_username = raw_input("Enter the username of the user: ")
             get_comment_list(insta_username)
-        elif choice == "i":
+        elif choice == "j":
             insta_username = raw_input("Enter the username of the user: ")
             analyse_hashtag(insta_username)
-        elif choice == "j":
+        elif choice == "i":
+            insta_username = raw_input("Enter the username of the user: ")
+            delete_negative_comment(insta_username)
+        elif choice == "k":
           exit()
         else:
             a=False
