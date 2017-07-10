@@ -1,4 +1,4 @@
-#INSTABOT
+#INSTABOT 7.
 import requests,urllib,pylab,colorama
 from textblob import TextBlob
 from termcolor import *
@@ -126,7 +126,7 @@ def get_post_id(insta_username):
             exit()
     else:
         print 'Status code other than 200 received!'
-        exit()
+
 
 
 #Function for liking users post.
@@ -140,7 +140,7 @@ def like_a_post(insta_username):
         print 'Like was successful!'
     else:
         print 'Your like was unsuccessful. Try again!'
-    exit()
+
 
 
 #defining fuction for making comment on users post.
@@ -157,7 +157,7 @@ def post_a_comment(insta_username):
         print "Successfully added a new comment!"
     else:
         print "Unable to add comment. Try again!"
-    exit()
+
 
 #Function to get the list of users who liked post.
 def get_like_list(insta_username):
@@ -175,7 +175,7 @@ def get_like_list(insta_username):
             print 'User does not exist!'
     else:
         print 'Status code other than 200 received!'
-    exit()
+
 
 
 #Function to get list of users who commented in post.
@@ -195,7 +195,7 @@ def get_comment_list(insta_username):
                 print 'user does not exist'
         else:
             print 'status code other than 200 is recieved!'
-    exit()
+
 
 def delete_negative_comment(insta_username):
     media_id = get_post_id(insta_username)
@@ -226,7 +226,7 @@ def delete_negative_comment(insta_username):
             print 'There are no existing comments on the post!'
     else:
         print 'Status code other than 200 received!'
-    exit()
+
 
 
 #No of images with popular hashtag.
@@ -294,34 +294,69 @@ def start_bot():
         choice = raw_input("Enter you choice: ")
         if choice == "a":
           self_info()
+
         elif choice == "b":
           insta_username = raw_input("Enter the username of the user: ")
-          get_user_info(insta_username)
+          if len(insta_username) > 0 and insta_username.isspace() == False:
+              get_user_info(insta_username)
+          else:
+              cprint('Add a valid name!', 'green')
+
         elif choice == "c":
           get_own_post()
+
         elif choice == "d":
           insta_username = raw_input("Enter the username of the user: ")
-          get_user_post(insta_username)
+          if len(insta_username) > 0 and insta_username.isspace() == False:
+              get_user_post(insta_username)
+          else:
+              cprint('Add a valid name!', 'green')
+
         elif choice == "e":
           insta_username = raw_input("Enter the username of the user: ")
-          like_a_post(insta_username)
+          if len(insta_username) > 0 and insta_username.isspace() == False:
+              like_a_post(insta_username)
+          else:
+              cprint('Add a valid name!', 'green')
+
         elif choice == "f":
             insta_username = raw_input("Enter the username of the user: ")
-            post_a_comment(insta_username)
+            if len(insta_username) > 0 and insta_username.isspace() == False:
+                post_a_comment(insta_username)
+            else:
+                cprint('Add a valid name!', 'green')
+
         elif choice == "g":
             insta_username = raw_input("Enter the username of the user: ")
-            get_like_list(insta_username)
+            if len(insta_username) > 0 and insta_username.isspace() == False:
+                get_like_list(insta_username)
+            else:
+                cprint('Add a valid name!', 'green')
+
         elif choice == "h":
             insta_username = raw_input("Enter the username of the user: ")
-            get_comment_list(insta_username)
+            if len(insta_username) > 0 and insta_username.isspace() == False:
+                get_comment_list(insta_username)
+            else:
+                cprint('Add a valid name!', 'green')
+
         elif choice == "j":
             insta_username = raw_input("Enter the username of the user: ")
-            analyse_hashtag(insta_username)
+            if len(insta_username) > 0 and insta_username.isspace() == False:
+                analyse_hashtag(insta_username)
+            else:
+                cprint('Add a valid name!', 'green')
+
         elif choice == "i":
             insta_username = raw_input("Enter the username of the user: ")
-            delete_negative_comment(insta_username)
+            if len(insta_username) > 0 and insta_username.isspace() == False:
+                delete_negative_comment(insta_username)
+            else:
+                cprint('Add a valid name!', 'green')
+
         elif choice == "k":
           exit()
+
         else:
             a=False
             print "wrong choice"
