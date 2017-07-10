@@ -278,7 +278,7 @@ def start_bot():
     while a:
         print '\n'
         cprint ('Hey! Welcome to instaBot!',"red")
-        cprint ('Here are your menu options:',"blue")
+        cprint ('Here are your menu options:\n',"blue")
         print "a.Get your own details"
         print "b.Get details of a user by username"
         print "c.Get your own recent post"
@@ -297,62 +297,67 @@ def start_bot():
 
         elif choice == "b":
           insta_username = raw_input("Enter the username of the user: ")
-          if len(insta_username) > 0 and insta_username.isspace() == False:
-              get_user_info(insta_username)
+          if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+              cprint('Username not valid in instagram!!!', "red")
           else:
-              cprint('Add a valid name!', 'green')
+              get_user_info(insta_username)
 
         elif choice == "c":
           get_own_post()
 
         elif choice == "d":
           insta_username = raw_input("Enter the username of the user: ")
-          if len(insta_username) > 0 and insta_username.isspace() == False:
-              get_user_post(insta_username)
-          else:
+          if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
               cprint('Add a valid name!', 'green')
+          else:
+              get_user_post(insta_username)
+
 
         elif choice == "e":
           insta_username = raw_input("Enter the username of the user: ")
-          if len(insta_username) > 0 and insta_username.isspace() == False:
-              like_a_post(insta_username)
+          if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+              cprint('Add a valid name!', 'blue')
           else:
-              cprint('Add a valid name!', 'green')
+              like_a_post(insta_username)
 
         elif choice == "f":
             insta_username = raw_input("Enter the username of the user: ")
-            if len(insta_username) > 0 and insta_username.isspace() == False:
-                post_a_comment(insta_username)
-            else:
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
                 cprint('Add a valid name!', 'green')
+            else:
+                post_a_comment(insta_username)
+
 
         elif choice == "g":
             insta_username = raw_input("Enter the username of the user: ")
-            if len(insta_username) > 0 and insta_username.isspace() == False:
-                get_like_list(insta_username)
-            else:
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
                 cprint('Add a valid name!', 'green')
+            else:
+                get_like_list(insta_username)
+
 
         elif choice == "h":
             insta_username = raw_input("Enter the username of the user: ")
-            if len(insta_username) > 0 and insta_username.isspace() == False:
-                get_comment_list(insta_username)
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+                cprint('Add a valid name!', 'red')
             else:
-                cprint('Add a valid name!', 'green')
+                get_comment_list(insta_username)
+
 
         elif choice == "j":
             insta_username = raw_input("Enter the username of the user: ")
-            if len(insta_username) > 0 and insta_username.isspace() == False:
-                analyse_hashtag(insta_username)
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+                cprint('Add a valid name!', "green")
             else:
-                cprint('Add a valid name!', 'green')
+                analyse_hashtag(insta_username)
+
 
         elif choice == "i":
             insta_username = raw_input("Enter the username of the user: ")
-            if len(insta_username) > 0 and insta_username.isspace() == False:
-                delete_negative_comment(insta_username)
+            if set('[~!@#$%^&*()+{}":;\']+$ " "').intersection(insta_username):
+                cprint('Add a valid name!', "red")
             else:
-                cprint('Add a valid name!', 'green')
+                delete_negative_comment(insta_username)
 
         elif choice == "k":
           exit()
