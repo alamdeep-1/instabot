@@ -3,6 +3,10 @@ import requests,urllib,pylab,colorama
 from textblob import TextBlob
 from termcolor import *
 from textblob.sentiments import NaiveBayesAnalyzer
+
+# matplotlib is used to draw graph and wordcloud is used to draw  word image
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 from acctoken import APP_ACCESS_TOKEN
 colorama.init()
 
@@ -260,6 +264,12 @@ def analyse_hashtag(insta_username):
     pylab.plot(x, hash_item.values(), 'g')
     # pylabshow is used to finally display the graph
     pylab.show()
+    # this code will create a wordcloud of hashtags stores in dictionary
+    wordcloud = WordCloud(background_color='white', mode='RGB', width=2000, height=1000).generate_from_frequencies(
+        hash_item)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.show()
 
 
 #organising all calling functions.
@@ -268,7 +278,7 @@ def start_bot():
     while a:
         print '\n'
         cprint ('Hey! Welcome to instaBot!',"red")
-        cprint ('Here are your menu options:\n',"blue")
+        cprint ('Here are your menu options:',"blue")
         print "a.Get your own details"
         print "b.Get details of a user by username"
         print "c.Get your own recent post"
@@ -317,4 +327,3 @@ def start_bot():
             print "wrong choice"
 
 start_bot()
-
